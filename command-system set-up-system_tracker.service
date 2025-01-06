@@ -1,0 +1,49 @@
+sudo apt update
+sudo apt install dos2unix
+
+
+sudo vim /etc/systemd/system/system_tracker.service
+
+# start this code write in this file system_tracker.service
+[Unit]
+Description=System Usage Tracker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/mspl/Videos/access/access_report.py
+WorkingDirectory=/home/mspl/Videos/access
+Restart=always
+User=mspl
+Group=mspl
+StandardOutput=append:/var/log/system_tracker.log
+StandardError=append:/var/log/system_tracker.err
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/mspl/.Xauthority
+
+[Install]
+WantedBy=multi-user.target
+
+# end this code write in this file system_tracker.service
+
+sudo chown -R mspl:mspl /home/mspl/Videos/access
+sudo chmod +x /home/mspl/Videos/access/access_report.py
+sudo ls -ld /home/mspl/Videos/access
+sudo ls -l /home/mspl/Videos/access/access_report.py
+getent passwd mspl
+
+
+
+# this command
+sudo chown mspl:mspl /home/mspl/Videos/access/access_report.py
+sudo chmod +x /home/mspl/Videos/access/access_report.py
+sudo sed -i 's/[[:space:]]*$//' /etc/systemd/system/system_tracker.service
+sudo dos2unix /etc/systemd/system/system_tracker.service
+cat -A /etc/systemd/system/system_tracker.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable system_tracker.service
+sudo systemctl start system_tracker.service
+sudo systemctl status system_tracker.service
+sudo systemd-analyze verify /etc/systemd/system/system_tracker.service
+
+
